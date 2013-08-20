@@ -7,11 +7,11 @@ module ActiveSupport #:nodoc:
         def weekday?
           (1..5).include?(wday)
         end
-        
+
         # Returns the number of weekdays until a future Date
         def weekdays_until(date)
           return 0 if date <= self
-          (self...date).select{|day| day.weekday?}.size
+          (self...date).select{|day| day.weekday?}.size + (self.weekday? ? 0 : 1)
         end
       end
     end
@@ -30,10 +30,10 @@ module ActiveSupport #:nodoc:
         def weekday?
           (1..5).include?(wday)
         end
-      
+
         def weekdays_until(date)
           return 0 if date <= self.to_date
-          (self.to_date...date).select{|day| day.weekday?}.size
+          (self.to_date...date).select{|day| day.weekday?}.size + (self.to_date.weekday? ? 0 : 1)
         end
       end
     end
@@ -70,7 +70,7 @@ module ActiveSupport #:nodoc:
         def weekdays_from(time = ::Time.now)
           # -5.weekdays_from(time) == 5.weekdays_ago(time)
           return self.abs.weekdays_ago(time) if self < 0
-          
+
           x = 0
           curr_date = time
 
@@ -87,7 +87,7 @@ module ActiveSupport #:nodoc:
         def weekdays_ago(time = ::Time.now)
           # -5.weekdays_ago(time) == 5.weekdays_from(time)
           return self.abs.weekdays_from(time) if self < 0
-          
+
           x = 0
           curr_date = time
 
