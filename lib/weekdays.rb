@@ -11,7 +11,7 @@ module ActiveSupport #:nodoc:
         # Returns the number of weekdays until a future Date
         def weekdays_until(date)
           return 0 if date <= self
-          (self...date).select{|day| day.weekday?}.size + (self.weekday? ? 0 : 1)
+          (self...date).select{|day| day.weekday?}.size + (self.weekday? ? 0 : 1) + (date.weekday? ? 0 : -1)
         end
       end
     end
@@ -33,7 +33,7 @@ module ActiveSupport #:nodoc:
 
         def weekdays_until(date)
           return 0 if date <= self.to_date
-          (self.to_date...date).select{|day| day.weekday?}.size + (self.to_date.weekday? ? 0 : 1)
+          (self.to_date...date).select{|day| day.weekday?}.size + (self.to_date.weekday? ? 0 : 1) + (date.to_date.weekday? ? 0 : -1)
         end
       end
     end
