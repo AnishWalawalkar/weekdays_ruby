@@ -17,8 +17,8 @@ module ActiveSupport #:nodoc:
           from_date = self
           from_date = from_date-2.days if from_date.wday == 0 # change from date from Sunday to Friday
           from_date = from_date-1.day if from_date.wday == 6  # change from date from Saturday to Friday
-          until_date = date-2.days if date.wday == 0 # change until_date from Sunday to Friday
-          until_date = date-1.day if date.wday == 6  # change until_date from Saturday to Friday
+          until_date = until_date-2.days if until_date.wday == 0 # change until_date from Sunday to Friday
+          until_date = until_date-1.day if until_date.wday == 6  # change until_date from Saturday to Friday
           total_days = (until_date-from_date).to_i
           num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday)
         end
@@ -48,8 +48,8 @@ module ActiveSupport #:nodoc:
           from_date = self.to_date
           from_date = from_date-2.days if from_date.wday == 0 # change from date from Sunday to Friday
           from_date = from_date-1.day if from_date.wday == 6  # change from date from Saturday to Friday
-          until_date = date-2.days if date.wday == 0 # change until_date from Sunday to Friday
-          until_date = date-1.day if date.wday == 6  # change until_date from Saturday to Friday
+          until_date = until_date-2.days if until_date.wday == 0 # change until_date from Sunday to Friday
+          until_date = until_date-1.day if until_date.wday == 6  # change until_date from Saturday to Friday
           total_days = (until_date-from_date).to_i
           num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday)
         end
