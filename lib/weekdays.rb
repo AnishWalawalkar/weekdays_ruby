@@ -9,9 +9,18 @@ module ActiveSupport #:nodoc:
         end
 
         # Returns the number of weekdays until a future Date
-        def weekdays_until(date)
-          return 0 if date <= self
-          (self...date).select{|day| day.weekday?}.size + (self.weekday? ? 0 : 1) + (date.weekday? ? 0 : -1)
+        def weekdays_until(until_date)
+          return 0 if until_date <= self
+          #(self...date).select{|day| day.weekday?}.size + (self.weekday? ? 0 : 1) + (date.weekday? ? 0 : -1)
+
+          # Convert from/to dates to weekdays to reduce calculation to simple math
+          from_date = self
+          from_date = from_date-2.days if from_date.wday == 0 # change from date from Sunday to Friday
+          from_date = from_date-1.day if from_date.wday == 6  # change from date from Saturday to Friday
+          until_date = date-2.days if date.wday == 0 # change until_date from Sunday to Friday
+          until_date = date-1.day if date.wday == 6  # change until_date from Saturday to Friday
+          total_days = (until_date-from_date).to_i
+          num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday)
         end
       end
     end
@@ -31,9 +40,18 @@ module ActiveSupport #:nodoc:
           (1..5).include?(wday)
         end
 
-        def weekdays_until(date)
-          return 0 if date <= self.to_date
-          (self.to_date...date).select{|day| day.weekday?}.size + (self.to_date.weekday? ? 0 : 1) + (date.to_date.weekday? ? 0 : -1)
+        def weekdays_until(until_date)
+          return 0 if until_date <= self.to_date
+          #(self.to_date...date).select{|day| day.weekday?}.size + (self.to_date.weekday? ? 0 : 1) + (date.to_date.weekday? ? 0 : -1)
+
+          # Convert from/to dates to weekdays to reduce calculation to simple math
+          from_date = self.to_date
+          from_date = from_date-2.days if from_date.wday == 0 # change from date from Sunday to Friday
+          from_date = from_date-1.day if from_date.wday == 6  # change from date from Saturday to Friday
+          until_date = date-2.days if date.wday == 0 # change until_date from Sunday to Friday
+          until_date = date-1.day if date.wday == 6  # change until_date from Saturday to Friday
+          total_days = (until_date-from_date).to_i
+          num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday)
         end
       end
     end
