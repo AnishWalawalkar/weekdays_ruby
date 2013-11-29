@@ -22,6 +22,12 @@ module ActiveSupport #:nodoc:
           total_days = (until_date-from_date).to_i
           num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday + (until_date.wday-from_date.wday < 0 ? 5 : 0))
         end
+
+        def next_weekday
+          return self if self.weekday?
+          next_weekday = self.wday == 0 ? 1 : 2
+          self + next_weekday.days
+        end
       end
     end
   end
