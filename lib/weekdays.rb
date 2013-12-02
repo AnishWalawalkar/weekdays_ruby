@@ -28,6 +28,12 @@ module ActiveSupport #:nodoc:
           next_weekday = self.wday == 0 ? 1 : 2
           self + next_weekday.days
         end
+
+        def prev_weekday
+          return self if self.weekday?
+          prev_weekday = self.wday == 0 ? 2 : 1
+          self - prev_weekday.days
+        end
       end
     end
   end
