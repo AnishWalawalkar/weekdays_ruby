@@ -4,14 +4,14 @@ module ActiveSupport #:nodoc:
       # Enables the use of time calculations within Date itself
       module Calculations
         # Tells whether the Date object is a weekday
-        def weekday?(weekends=nil)
+        def weekday?
           return (1..5).include?(wday)
         end
 
-        def business_day?(weekends=nil)
-          return (1..5).include?(wday) unless weekends
+        def businessday?
+          return (1..5).include?(wday) unless self.business_weekends
           flag = false
-          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && weekends.include?(self))
+          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && self.business_weekends.include?(self))
             flag = true
           end
           return flag
@@ -32,11 +32,11 @@ module ActiveSupport #:nodoc:
           num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday + (until_date.wday-from_date.wday < 0 ? 5 : 0))
         end
 
-        def weekdays_until_with_weekends(until_date, weekends=nil)
-          weekend_number = [0, 6]
+        def weekdays_until_with_weekends(until_date)
+          weekend_numbers = [0, 6]
           until_date -= 1
-          weekend_count = weekends ? (self..until_date).select{|dt| weekends.include?(dt)}.to_a.size : 0
-          count = (self..until_date).reject{|dt| weekend_number.include?(dt.wday)}.to_a.size
+          weekend_count = self.business_weekends ? (self..until_date).select{|dt| self.business_weekends.include?(dt)}.to_a.size : 0
+          count = (self..until_date).reject{|dt| weekend_numbers.include?(dt.wday)}.to_a.size
           return (weekend_count + count)
         end
 
@@ -46,12 +46,12 @@ module ActiveSupport #:nodoc:
           self + next_weekday.days
         end
 
-        def next_businessday(weekends=nil)
-          return self.next_weekday unless weekends
-          return self if weekends.include?(self)
+        def next_businessday
+          return self.next_weekday unless self.business_weekends
+          return self if self.business_weekends.include?(self)
           day_count = 0
           if self.wday == 6
-            if weekends.include?(self+1)
+            if self.business_weekends.include?(self+1)
               day_count = 1
             else
               day_count = 2
@@ -68,14 +68,14 @@ module ActiveSupport #:nodoc:
           self - prev_weekday.days
         end
 
-        def prev_businessday(weekends=nil)
-          return self.prev_weekday unless weekends
-          return self if weekends.include?(self)
+        def prev_businessday
+          return self.prev_weekday unless self.business_weekends
+          return self if self.business_weekends.include?(self)
           day_count = 0
           if self.wday == 6
             day_count = 1
           elsif self.wday == 0
-            if weekends.include?(self -1)
+            if self.business_weekends.include?(self -1)
               day_count = 1
             else
               day_count = 2
@@ -101,10 +101,10 @@ module ActiveSupport #:nodoc:
           (1..5).include?(wday)
         end
 
-        def business_day?(weekends=nil)
-          return (1..5).include?(wday) unless weekends
+        def businessday?
+          return (1..5).include?(wday) unless self.business_weekends
           flag = false
-          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && weekends.include?(self))
+          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && self.business_weekends.include?(self))
             flag = true
           end
           return flag
@@ -124,11 +124,11 @@ module ActiveSupport #:nodoc:
           num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday + (until_date.wday-from_date.wday < 0 ? 5 : 0))
         end
 
-        def weekdays_until_with_weekends(until_date, weekends=nil)
-          weekend_number = [0, 6]
+        def weekdays_until_with_weekends(until_date)
+          weekend_numbers = [0, 6]
           until_date -= 1
-          weekend_count = weekends ? (self..until_date).select{|dt| weekends.include?(dt)}.to_a.size : 0
-          count = (self..until_date).reject{|dt| weekend_number.include?(dt.wday)}.to_a.size
+          weekend_count = self.business_weekends ? (self..until_date).select{|dt| self.business_weekends.include?(dt)}.to_a.size : 0
+          count = (self..until_date).reject{|dt| weekend_numbers.include?(dt.wday)}.to_a.size
           return (weekend_count + count)
         end
 
@@ -151,10 +151,10 @@ module ActiveSupport #:nodoc:
           (1..5).include?(wday)
         end
 
-        def business_day?(weekends=nil)
-          return (1..5).include?(wday) unless weekends
+        def businessday?
+          return (1..5).include?(wday) unless self.business_weekends
           flag = false
-          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && weekends.include?(self))
+          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && self.business_weekends.include?(self))
             flag = true
           end
           return flag
