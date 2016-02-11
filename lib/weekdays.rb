@@ -43,7 +43,7 @@ module ActiveSupport #:nodoc:
         end
 
         def next_businessday
-          return self.next_weekday if self.businessday?
+          return self.next_weekday unless self.business_weekends
           return self if self.business_weekends.include?(self)
           day_count = 0
           if self.wday == 6
@@ -65,7 +65,7 @@ module ActiveSupport #:nodoc:
         end
 
         def prev_businessday
-          return self.prev_weekday if self.businessday?
+          return self.prev_weekday unless self.business_weekends
           return self if self.business_weekends.include?(self)
           day_count = 0
           if self.wday == 6
@@ -116,7 +116,7 @@ module ActiveSupport #:nodoc:
           num_weekdays = total_days/7*5 + (until_date.wday-from_date.wday + (until_date.wday-from_date.wday < 0 ? 5 : 0))
         end
 
-        def weekdays_until(until_date)
+        def weekdays_until_with_weekends(until_date)
           weekend_numbers = [0, 6]
           until_date -= 1
           weekend_count = self.business_weekends ? (self..until_date).select{|dt| self.business_weekends.include?(dt)}.to_a.size : 0
@@ -144,12 +144,8 @@ module ActiveSupport #:nodoc:
         end
 
         def businessday?
-          return (1..5).include?(wday) unless self.business_weekends
-          flag = false
-          if (1..5).include?(self.wday) || ([0, 6].include?(self.wday) && self.business_weekends.include?(self))
-            flag = true
-          end
-          return flag
+          return true if (1..5).include?(wday)
+          return self.business_weekends.include?(self) ? true : false
         end
       end
     end
